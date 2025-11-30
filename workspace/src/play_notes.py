@@ -2,19 +2,32 @@ import pygame
 import os
 
 class SoundPlayer:
-    def __init__(self, notes):
-        pygame.mixer.init()
+    def __init__(self, notes, sound_dir):
+        # IMPORTANT: 不要在這裡初始化 mixer！
+        # pygame.mixer.init() 必須交由 hybrid_test.py 控制
+        
         self.notes = notes
         self.sounds = {}
+        self.sound_dir = sound_dir
+
+        print(f"[SoundPlayer] Loading sounds from: {self.sound_dir}")
+
         for note in self.notes:
-            sound_path = os.path.join("resources", "sounds", f"{note}.mp3")
-            if os.path.exists(sound_path):
-                self.sounds[note] = pygame.mixer.Sound(sound_path)
+            path = os.path.join(self.sound_dir, f"{note}.mp3")
+            if os.path.exists(path):
+                try:
+                    self.sounds[note] = pygame.mixer.Sound(path)
+                    print(f"[Loaded] {note} -> {path}")
+                except pygame.error as e:
+                    print(f"[Error loading] {path}: {e}")
             else:
-                print(f"Warning: {sound_path} not found.")
+                print(f"[Missing] {note}.mp3 ({path})")
 
     def play_note_by_index(self, i):
         if 0 <= i < len(self.notes):
             note = self.notes[i]
             if note in self.sounds:
-                self.sounds[note].play()
+                try:
+                    self.sounds[note].play()
+                except pygame.error as e:
+                    print(f"[Play Error] {note}: {e}")

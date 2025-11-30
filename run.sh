@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# 用法說明
+export DISPLAY=:0
+xhost +local:root
+
 usage() {
   echo "usage: $0 [service]"
   echo "service: dev | deploy"

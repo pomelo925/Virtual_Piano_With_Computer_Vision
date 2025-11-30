@@ -1,9 +1,26 @@
+
 import cv2
 import numpy as np
 import json
 
-# Webcam settings
-cap = cv2.VideoCapture(0)
+# 自動尋找可用攝影機 port
+def find_available_camera(max_index=10):
+    for i in range(max_index):
+        cap = cv2.VideoCapture(i)
+        if cap.isOpened():
+            ret, frame = cap.read()
+            if ret:
+                cap.release()
+                return i
+        cap.release()
+    return None
+
+cam_index = find_available_camera()
+if cam_index is None:
+    print("No available camera found. Calibration aborted.")
+    exit(1)
+
+cap = cv2.VideoCapture(cam_index)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
