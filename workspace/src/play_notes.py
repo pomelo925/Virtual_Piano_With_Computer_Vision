@@ -16,8 +16,10 @@ class SoundPlayer:
             path = os.path.join(self.sound_dir, f"{note}.mp3")
             if os.path.exists(path):
                 try:
-                    self.sounds[note] = pygame.mixer.Sound(path)
-                    print(f"[Loaded] {note} -> {path}")
+                    sound = pygame.mixer.Sound(path)
+                    sound.set_volume(1.0)  # 設定音量為最大 (0.0 ~ 1.0)
+                    self.sounds[note] = sound
+                    # print(f"[Loaded] {note} -> {path}")
                 except pygame.error as e:
                     print(f"[Error loading] {path}: {e}")
             else:
